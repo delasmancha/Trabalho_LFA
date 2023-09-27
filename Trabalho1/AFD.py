@@ -1,23 +1,27 @@
 class AFD:
     def __init__(self, Alfabeto):
+        self.__estadoAtual = None
+        self.__deuErro = None
         Alfabeto = str(Alfabeto)
         self.estados = set()
         self.alfabeto = Alfabeto
         self.transicoes = dict()
         self.inicial = None
         self.finais = set()
+
     @staticmethod
     def saveAf(self, af, nome):
         arq = open(nome, "w")
         arq.write(str(af))
+
     @staticmethod
     def loadAF(self, path):
         afs = open(path, "r").read()
-        est = afs[afs.find('E = {')+1:afs.find('A = {')]
-        alfa = afs[afs.find('A = {')+1:afs.find('T = {')]
-        trans = afs[afs.find('T = {')+1:afs.find('i = ')]
-        ini = afs[afs.find('i = ')+4]
-        fin = afs[afs.find('F = {')+1:len(afs)]
+        est = afs[afs.find('E = {') + 1:afs.find('A = {')]
+        alfa = afs[afs.find('A = {') + 1:afs.find('T = {')]
+        trans = afs[afs.find('T = {') + 1:afs.find('i = ')]
+        ini = afs[afs.find('i = ') + 4]
+        fin = afs[afs.find('F = {') + 1:len(afs)]
         bypass = " >'=-{},()\n"
         aux = ""
         for i in alfa:
@@ -39,18 +43,21 @@ class AFD:
             if i not in bypass:
                 aux.append(i)
         i = 0
-        while(i != len(aux)):
-            af.criaTransicao(int(aux[i]), int(aux[i+2]), aux[i+1])
+        while i != len(aux):
+            af.criaTransicao(int(aux[i]), int(aux[i + 2]), aux[i + 1])
             i = i + 3
         return af
+
     @staticmethod
     def copiaAFD(origem, copia):
         copia = origem
         return copia
+
     def limpaAfd(self):
         self.__deuErro = False
         self.__estadoAtual = self.inicial
-    def criaEstado(self, id, inicial = False, final = False):
+
+    def criaEstado(self, id, inicial=False, final=False):
         id = int(id)
         if id in self.estados:
             return False
@@ -60,20 +67,23 @@ class AFD:
         if final:
             self.finais = self.finais.union({id})
         return True
+
     def criaTransicao(self, origem, destino, simbolo):
         origem = int(origem)
         destino = int(destino)
         simbolo = str(simbolo)
-        if not origem in self.estados:
+        if origem not in self.estados:
             return False
-        if not destino in self.estados:
+        if destino not in self.estados:
             return False
         self.transicoes[(origem, simbolo)] = destino
         return True
+
     def mudaEstadoInicial(self, id):
-        if not id in self.estados:
+        if id not in self.estados:
             return
         self.inicial = id
+
     def mudaEstadoFinal(self, id, final):
         if id not in self.estados or (not final and id not in self.finais):
             return
@@ -81,38 +91,43 @@ class AFD:
             self.finais.add(id)
         else:
             self.finais.remove(id)
+
     def moveAFD(self, cadeia):
         for simbolo in cadeia:
-            if not simbolo in self.alfabeto:
+            if simbolo not in self.alfabeto:
                 self.__deuErro = True
                 break
-            if(self.__estadoAtual, simbolo) in self.transicoes.keys():
+            if (self.__estadoAtual, simbolo) in self.transicoes.keys():
                 novoEstado = self.transicoes[(self.__estadoAtual, simbolo)]
                 self.__estadoAtual = novoEstado
             else:
                 self.__deuErro = True
                 break
         return self.__estadoAtual
+
     def deuErro(self):
         return self.__deuErro
+
     def estadoAtual(self):
         return self.__estadoAtual
+
     def estadoFinal(self, id):
         return id in self.finais
+
     def __str__(self):
         s = 'AFD(E, A, T, i, F): \n'
         s += '  E = { '
         for e in self.estados:
-            s+= '{}, '.format(str(e))
+            s += '{}, '.format(str(e))
         s += '} \n'
         s += '  A = { '
         for a in self.alfabeto:
             s += "'{}', ".format(a)
         s += '} \n'
         s += '  T = { '
-        for (e,a) in self.transicoes.keys():
-            d = self.transicoes[(e,a)]
-            s += "({}, '{}') --> {}, ".format(e,a,d)
+        for (e, a) in self.transicoes.keys():
+            d = self.transicoes[(e, a)]
+            s += "({}, '{}') --> {}, ".format(e, a, d)
         s += '} \n'
         s += '  i = {}\n'.format(self.inicial)
         s += '  F = {'
