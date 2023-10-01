@@ -5,12 +5,6 @@ if __name__ == '__main__':
     teste = AFD('ab')
     for i in range(1, 5):
         teste.criaEstado(i)
-        # if i == 1:
-        #     teste.criaEstado(i, True)
-        # if i == 4:
-        #     teste.criaEstado(i, False, True)
-        # else:
-        #     teste.criaEstado(i)
 
     teste.mudaEstadoInicial(1)
     teste.mudaEstadoFinal(4, True)
@@ -22,15 +16,14 @@ if __name__ == '__main__':
     teste.criaTransicao(1, 3, 'b')
     teste.criaTransicao(3, 1, 'b')
     teste.criaTransicao(2, 4, 'b')
-    teste.criaTransicao(4, 2, 'b')
-
+    teste.criaTransicao(4, 5, 'b')
 
     teste.criaEstado(5)
     teste.criaTransicao(5, 1, 'a')
     teste.criaTransicao(5, 4, 'b')
 
-    # print(Minimizacao.stateEq(teste, 1, 5))
-    # print(Minimizacao.stateEq(teste, 2, 5))
+    print(Minimizacao.stateEq(teste, 1, 5))
+    print(Minimizacao.stateEq(teste, 2, 5))
 
     teste.criaEstado(6)
     teste.criaTransicao(6, 2, 'a')
@@ -39,7 +32,7 @@ if __name__ == '__main__':
     teste.criaTransicao(7, 5, 'a')
     teste.criaTransicao(7, 5, 'b')
 
-    # print(Minimizacao.stateEq(teste, 6, 7))
+    print(Minimizacao.stateEq(teste, 6, 7))
 
     teste.criaEstado(8)
     teste.criaTransicao(8, 6, 'a')
@@ -48,7 +41,9 @@ if __name__ == '__main__':
     teste.criaTransicao(9, 7, 'a')
     teste.criaTransicao(9, 1, 'b')
 
-    print(teste.alfabeto[len(teste.alfabeto)-1])
     print(Minimizacao.stateEq(teste, 8, 9))
 
-    # print(teste.transicoes.get((1, 'a')))
+    print(teste)
+
+    Minimizacao.minimizacao(teste)
+    print(teste)
