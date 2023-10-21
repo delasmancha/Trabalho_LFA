@@ -192,6 +192,25 @@ if __name__ == "__main__":
         elif opc == 2:
             afd3 = copia()
             print(afd3)
+        elif opc == 3:
+            opc1 = 99999
+            if opc1 != 4:
+                print("1- Equivalência de estados em um AFD")
+                print("2- Equivalência de AFDs")
+                print("3- Minimização de um AFD")
+                print("4- Sair")
+                opc1 = int(input("Digite a Opção Desejada: "))
+                if opc1 == 1:
+                    print("zaaaaaaaa")
+                elif opc1 == 2:
+                    boolean = Minimizacao.afEq(afd1, afd2)
+                    if boolean == True:
+                        print("\nAutômatos são equivalentes")
+                    else:
+                        print("\nAutômatos não são equivalentes")
+                elif opc1 == 3:
+                    afd4 = Minimizacao.minimizacao(afd1)
+                    print(afd4)
         elif opc == 4:
             afd4 = opcj(afd1, afd2)
             print(afd4)
