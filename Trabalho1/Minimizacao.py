@@ -3,31 +3,37 @@ class Minimizacao:
         from Trabalho1.AFD import AFD
 
     @staticmethod
+    def __transicoes(afd):
+        transicoes = []
+        for i in afd.estados:
+            for j in afd.alfabeto:
+                if (i, j) in afd.transicoes.keys():
+                    transicoes.append([i, afd.transicoes.get((i, j)), j])
+        return transicoes
+
+    @staticmethod
     def stateEq(afd, id1, id2):
         # Casos Triviais: 1- Se um dos dois estados não estiver no afd.
         if id1 not in afd.estados or id2 not in afd.estados:
             return False
-        # 2- Se um dos estados for inicial.
-        elif (id1 == afd.inicial or id2 == afd.inicial) and (id1 != id2):
-            return False
-        # 3- Se um dos estados for final, e o outro não.
+        # 2- Se um dos estados for final, e o outro não.
         elif (id1 in afd.finais and id2 not in afd.finais) or (id2 in afd.finais and id1 not in afd.finais):
             return False
-        # 4- Se ambos estados sâo iguais.
+        # 3- Se ambos estados sâo iguais.
         elif id1 == id2:
             return True
         # Verificação de transições: itera o alfabeto
-        controle = 0
         for i in afd.alfabeto:
             # Se um dos estados tiver transição com aquele caractere do alfabeto e o outro não,
             # os estados são diferentes.
-            if (afd.transicoes.get((id1, i)) is None and afd.transicoes.get((id2, i)) is not None) or (
-                    afd.transicoes.get((id1, i)) is not None and afd.transicoes.get((id2, i)) is None):
-                return False
             # Se as transições forem iguais e o algoritmo já testou todo o alfabeto.
+            if ((id1, i) in afd.transicoes.keys()) != ((id1, i) in afd.transicoes.keys()):
+                return False
             if afd.transicoes.get((id1, i)) == afd.transicoes.get((id2, i)) and i == afd.alfabeto[
-                len(afd.alfabeto) - 1]:
+            len(afd.alfabeto) - 1]:
                 return True
+            if afd.transicoes.get((id1, i)) == id2 and afd.transicoes.get((id2, i)) == id1:
+                pass
             # Caso contrário, testa as transições seguintes, até terminar o alfabeto inteiro.
             elif afd.transicoes.get((id1, i)) is not None or afd.transicoes.get((id2, i)) is not None:
                 if Minimizacao.stateEq(afd, afd.transicoes.get((id1, i)), afd.transicoes.get((id2, i))):
@@ -38,13 +44,7 @@ class Minimizacao:
         return True
 
     @staticmethod
-    def afEq(afd1, afd2):
-        if Minimizacao.stateEq(afd1.inicial, afd2.inicial):
-            return True
-        return False
-
-    @staticmethod
-    def minimizacao(afd):
+    def estadosEquivalentes(afd):
         equivalentes = []
         for i in afd.estados:
             aux = []
@@ -57,6 +57,30 @@ class Minimizacao:
                 if not aux or aux in equivalentes:
                     continue
                 equivalentes.append(aux)
+        return equivalentes
+
+    @staticmethod
+    def concatAF(afd1, afd2):
+        for i in afd2.estados:
+            afd1.criaEstado(int("1{}".format(i)))
+            for j in afd1.alfabeto:
+                if (i, j) in afd2.transicoes:
+                    afd1.criaTransicao(int("1{}".format(i)), "1{}".format(afd2.transicoes.get((i, j))), j)
+            if i in afd2.finais:
+                afd1.mudaEstadoFinal("1{}".format(i), True)
+        return afd1
+
+    @staticmethod
+    def afEq(afd1, afd2):
+        afConcatenado = Minimizacao.concatAF(afd1, afd2)
+        if Minimizacao.stateEq(afConcatenado, afd1.inicial, afd2.inicial):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def minimizacao(afd):
+        equivalentes = Minimizacao.estadosEquivalentes(afd)
         for i in equivalentes:
             for j in afd.estados:
                 for k in afd.alfabeto:
@@ -67,4 +91,3 @@ class Minimizacao:
                         if j == i[1]:
                             del afd.transicoes[(j, k)]
             afd.estados.remove(i[1])
-        return equivalentes
