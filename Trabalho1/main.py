@@ -2,6 +2,7 @@ import AFD_jflap as jflap
 from Minimizacao import Minimizacao
 from Multiplicacao import Multiplicacao
 from Operacoes_Conjunto import Operacoes as op
+
 from AFD import AFD
 
 def copia():
@@ -127,100 +128,69 @@ if __name__ == "__main__":
     afd4 = AFD("abs")
     count = 1
 
-    print("Bem Vindo!\n")
-    print("Leia as opções do menu e deposi escolha uma das opções abaixo!")
-    while opc != 6:
-        print("1- Leitura e Escrita de AFDs")
-        print("2- Copia de AFDs")
-        print("3- Equivalência de AFDs")
-        print("4- Operações de Conjunto")
-        print("5- printar todos os AFDs")
-        print("6- Sair")
-        opc = int(input("Digite a Opção Desejada: "))
-        if opc == 1:
-            opc1 = 99999
-            caminho = ""
-            if opc1 != 5:
-                print("1- Leitura de um arquivo de texto")
-                print("2- Escrita em um arquivo de texto")
-                print("3- Leitura pelo JFLAP")
-                print("4- Escrita pelo JFLAP")
-                print("5- Sair")
-                opc1 = int(input("Digite a Opção Desejada: "))
-                if opc1 == 1:
-                    caminho = input("Digite o caminho de onde deseje ler o AFD: ")
-                    if(count == 1):
-                        afd1 = AFD.loadAF(caminho)
-                        print(afd1)
-                        count = 2
-                    else:
-                        afd2 = AFD.loadAF(caminho)
-                        print(afd2)
-                        count = 1    
-                elif opc1 == 2:
-                    caminho = input("Digite o caminho de onde deseje salvar o AFD: ")
-                    count = int(input("Digite o número do AFD que deseja Salvar: "))
-                    if count == 1:
-                        AFD.saveAf(afd1, caminho)
-                    elif count == 2:
-                        AFD.saveAf(afd2, caminho)
-                    elif count == 3:
-                        AFD.saveAf(afd3, caminho)
-                    elif count == 4:
-                        AFD.saveAf(afd4, caminho)
-                    count = 1
-                elif opc1 == 3:
-                    if(count == 1):
-                        afd1 = jflap.lerAFD()
-                        print(afd1)
-                        count = 2
-                    else:
-                        afd2 = jflap.lerAFD()
-                        print(afd2)
-                        count = 1
-                elif opc1 == 4:
-                    count = int(input("Digite o número do AFD que deseja Salvar: "))
-                    if count == 1:
-                        jflap.escreveAFD(afd1)
-                    elif count == 2:
-                        jflap.escreveAFD(afd2)
-                    elif count == 3:
-                        jflap.escreveAFD(afd3)
-                    elif count == 4:
-                        jflap.escreveAFD(afd4)
-                    count = 1
-        elif opc == 2:
-            afd3 = copia()
-            print(afd3)
-        elif opc == 3:
-            opc1 = 99999
-            if opc1 != 4:
-                print("1- Equivalência de estados em um AFD")
-                print("2- Equivalência de AFDs")
-                print("3- Minimização de um AFD")
-                print("4- Sair")
-                opc1 = int(input("Digite a Opção Desejada: "))
-                if opc1 == 1:
-                    print("zaaaaaaaa")
-                elif opc1 == 2:
-                    boolean = Minimizacao.afEq(afd1, afd2)
-                    if boolean == True:
-                        print("\nAutômatos são equivalentes")
-                    else:
-                        print("\nAutômatos não são equivalentes")
-                elif opc1 == 3:
-                    afd4 = Minimizacao.minimizacao(afd1)
-                    print(afd4)
-        elif opc == 4:
-            afd4 = opcj(afd1, afd2)
-            print(afd4)
-        elif opc == 5:
-            print("                     AFD 1                   ")
-            print(afd1)
-            print("                     AFD 2                   ")
-            print(afd2)
-            print("                     AFD 3                   ")
-            print(afd3)
-            print("                     AFD 4                   ")
-            print(afd4)
-    # print(teste.transicoes.get((1, 'a')))
+
+    Minimizacao.minimizacao(teste)
+    print(teste)
+
+
+
+    # # Teste Equivalência de Autômatos
+    af1 = AFD('ab')
+    for i in range(0, 4):
+        af1.criaEstado(i)
+    af1.mudaEstadoInicial(0)
+    af1.mudaEstadoFinal(2, True)
+    af1.criaTransicao(0, 1, 'a')
+    af1.criaTransicao(0, 0, 'b')
+    af1.criaTransicao(1, 2, 'a')
+    af1.criaTransicao(1, 0, 'b')
+    af1.criaTransicao(2, 2, 'a')
+    af1.criaTransicao(2, 2, 'b')
+    af1.criaTransicao(3, 3, 'a')
+    af1.criaTransicao(3, 3, 'b')
+
+    af2 = AFD('ab')
+    for i in range(1, 5):
+        af2.criaEstado(i)
+    af2.mudaEstadoInicial(1)
+    af2.mudaEstadoFinal(3, True)
+    af2.criaTransicao(1, 1, 'a')
+    af2.criaTransicao(1, 0, 'b')
+    af2.criaTransicao(2, 2, 'a')
+    af2.criaTransicao(2, 4, 'b')
+    af2.criaTransicao(3, 3, 'a')
+    af2.criaTransicao(3, 3, 'b')
+    af2.criaTransicao(4, 4, 'a')
+    af2.criaTransicao(4, 4, 'b')
+
+    print(Minimizacao.afEq(af1, af2))
+
+    af3 = AFD('ab')
+    for i in range(0, 4):
+        af1.criaEstado(i)
+    af1.mudaEstadoInicial(0)
+    af1.mudaEstadoFinal(2, True)
+    af1.criaTransicao(0, 1, 'a')
+    af1.criaTransicao(0, 0, 'b')
+    af1.criaTransicao(1, 2, 'a')
+    af1.criaTransicao(1, 0, 'b')
+    af1.criaTransicao(2, 2, 'a')
+    af1.criaTransicao(2, 2, 'b')
+    af1.criaTransicao(3, 3, 'a')
+    af1.criaTransicao(3, 3, 'b')
+
+    af4 = AFD('ab')
+    for i in range(1, 5):
+        af2.criaEstado(i)
+    af2.mudaEstadoInicial(1)
+    af2.mudaEstadoFinal(4, True)
+    af2.criaTransicao(1, 1, 'a')
+    af2.criaTransicao(1, 0, 'b')
+    af2.criaTransicao(2, 2, 'a')
+    af2.criaTransicao(2, 2, 'b')
+    af2.criaTransicao(3, 3, 'a')
+    af2.criaTransicao(3, 3, 'b')
+    af2.criaTransicao(4, 4, 'a')
+    af2.criaTransicao(4, 4, 'b')
+
+    print(Minimizacao.afEq(af1, af2))
