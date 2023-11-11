@@ -3,15 +3,6 @@ class Minimizacao:
         from Trabalho1.AFD import AFD
 
     @staticmethod
-    def __transicoes(afd):
-        transicoes = []
-        for i in afd.estados:
-            for j in afd.alfabeto:
-                if (i, j) in afd.transicoes.keys():
-                    transicoes.append([i, afd.transicoes.get((i, j)), j])
-        return transicoes
-
-    @staticmethod
     def stateEq(afd, id1, id2, visited=None):
         # Se os estados são iguais, são equivalentes.
         if id1 == id2:
