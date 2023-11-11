@@ -3,44 +3,37 @@ class Minimizacao:
         from Trabalho1.AFD import AFD
 
     @staticmethod
-    def __transicoes(afd):
-        transicoes = []
-        for i in afd.estados:
-            for j in afd.alfabeto:
-                if (i, j) in afd.transicoes.keys():
-                    transicoes.append([i, afd.transicoes.get((i, j)), j])
-        return transicoes
-
-    @staticmethod
-    def stateEq(afd, id1, id2):
-        # Casos Triviais: 1- Se um dos dois estados não estiver no afd.
-        if id1 not in afd.estados or id2 not in afd.estados:
-            return False
-        # 2- Se um dos estados for final, e o outro não.
-        elif (id1 in afd.finais and id2 not in afd.finais) or (id2 in afd.finais and id1 not in afd.finais):
-            return False
-        # 3- Se ambos estados sâo iguais.
-        elif id1 == id2:
+    def stateEq(afd, id1, id2, visited=None):
+        # Se os estados são iguais, são equivalentes.
+        if id1 == id2:
             return True
-        # Verificação de transições: itera o alfabeto
-        for i in afd.alfabeto:
-            # Se um dos estados tiver transição com aquele caractere do alfabeto e o outro não,
-            # os estados são diferentes.
-            # Se as transições forem iguais e o algoritmo já testou todo o alfabeto.
-            if ((id1, i) in afd.transicoes.keys()) != ((id1, i) in afd.transicoes.keys()):
+
+        # Inicialização de estados visitados.
+        if visited is None:
+            visited = set()
+
+        # Se os estados já foram visitados, são equivalentes.
+        if (id1, id2) in visited or (id2, id1) in visited:
+            return True
+
+        # Marca os estados como visitados.
+        visited.add((id1, id2))
+
+        # Verifica a equivalência para cada símbolo do alfabeto.
+        for symbol in afd.alfabeto:
+            next_state1 = afd.transicoes.get((id1, symbol))
+            next_state2 = afd.transicoes.get((id2, symbol))
+
+            # Se uma transição é nula e a outra não, os estados não são equivalentes.
+            if (next_state1 is None) != (next_state2 is None):
                 return False
-            if afd.transicoes.get((id1, i)) == afd.transicoes.get((id2, i)) and i == afd.alfabeto[
-            len(afd.alfabeto) - 1]:
-                return True
-            if afd.transicoes.get((id1, i)) == id2 and afd.transicoes.get((id2, i)) == id1:
-                pass
-            # Caso contrário, testa as transições seguintes, até terminar o alfabeto inteiro.
-            elif afd.transicoes.get((id1, i)) is not None or afd.transicoes.get((id2, i)) is not None:
-                if Minimizacao.stateEq(afd, afd.transicoes.get((id1, i)), afd.transicoes.get((id2, i))):
-                    pass
-                else:
+
+            # Se ambas as transições não são nulas, verifica a equivalência recursivamente.
+            if next_state1 is not None and next_state2 is not None:
+                if not Minimizacao.stateEq(afd, next_state1, next_state2, visited):
                     return False
-        # Se o algoritmo não verificou nenhuma diferença entre os estados, então eles são iguais.
+
+        # Se não foi encontrado motivo para serem diferentes, os estados são equivalentes.
         return True
 
     @staticmethod
