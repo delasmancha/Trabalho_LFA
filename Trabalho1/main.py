@@ -1,4 +1,4 @@
-# import AFD_jflap as jflap
+from AFD_jflap import AFD_JFLAP as jflap
 from Minimizacao import Minimizacao
 from Multiplicacao import Multiplicacao
 from Operacoes_Conjunto import Operacoes as op
@@ -15,15 +15,33 @@ def clear():
 
 
 def cat(arq):
-    arq = str(arq)
-    if os.name == 'nt':
-        os.system("notepad.exe {}".format(arq))
-    else:
-        os.system("cat {}".format(arq))
+    try:
+        arq = str(arq)
+        if os.name == 'nt':
+            os.system("notepad.exe {}".format(arq))
+        else:
+            os.system("cat {}".format(arq))
+    except Exception as Erro:
+        clear()
+        print("*****************************************************")
+        print("\nErro ao abrir arquivo!!")
+        continuar()
+
+
+def open_jflap(arq):
+    try:
+        arq = str(arq)
+        os.system(f'cmd /k "java -jar JFLAP7.1.jar {arq}.jff"')
+    except Exception as Erro:
+        clear()
+        print("*****************************************************")
+        print("\nErro ao abrir arquivo no JFLAP!!")
+        continuar()
 
 
 def continuar():
-    input("Aperte qualquer tecla para continuar ...")
+    time.sleep(1)
+    input("\nAperte qualquer tecla para continuar ...")
     clear()
 
 
@@ -50,8 +68,8 @@ if __name__ == "__main__":
     afd1.criaTransicao(4, 2, "b")
     print(afd1)
 
-    # input("\nafd1 criado com sucesso!")
     continuar()
+
     # Início da bateria de demonstrações
     print("*********************************************************************************************")
     print("\nDEMONSTRAÇÃO 1: Copiar Autômatos, Salvar e carregar autômatos de arquivos texto e jff (JFLAP)")
@@ -64,7 +82,7 @@ if __name__ == "__main__":
     print("\nSalvando afd1 em um arquivo texto:")
     AFD.saveAf(afd1, "afd1")
     time.sleep(1)
-    print("afd1 salvo com sucesso! Abrindo arquivo...")
+    print("\nafd1 salvo com sucesso! Abrindo arquivo...\n")
     time.sleep(1)
     cat("afd1")
     continuar()
@@ -73,16 +91,26 @@ if __name__ == "__main__":
     print("\nCarregando o afd1 de um arquivo texto:")
     time.sleep(1)
     afaux = AFD.loadAF("afd1.txt")
-    print("\nAFD carregado do arquivo:")
+    print("\nAFD carregado do arquivo:\n")
     print(afaux)
     continuar()
 
-    print("*********************************************************************************************")
-    print("\nSalvando afd1 em um arquivo .jff (JFLAP)")
-    continuar()
+    # Descomentar quando for apresentar. De alguma forma o JFLAP buga a execução do programa no terminal e encerra a execução abruptamente.
+    # print("*********************************************************************************************")
+    # print("\nSalvando afd1 no JFLAP:")
+    # jflap.escreveAFD(afd1, "afd1")
+    # time.sleep(1)
+    # print("afd1 salvo com sucesso! Abrindo arquivo...")
+    # time.sleep(1)
+    # open_jflap("afd1")
+    # continuar()
 
     print("*********************************************************************************************")
-    print("\nCarregando um afd de um arquivo .jff")
+    print("\nCarregando o afd1 do JFLAP:")
+    time.sleep(1)
+    afaux = jflap.lerAFD("afd1.jff")
+    print("\nAFD carregado do arquivo:\n")
+    print(afaux)
     continuar()
 
     print("*********************************************************************************************")
@@ -98,11 +126,12 @@ if __name__ == "__main__":
     print("\nO estado 5 leva com 'a' ao estado 1 e com 'b' ao estado 4.")
     print("Perceba que essas são as mesma transições do estado 2, portanto ambos devem ser trivialmente equivalentes")
     print("\n\t 5 é equivalente ao estado 2?")
-    print("Resposta do programa: ", Minimizacao.stateEq(afd1, 2, 5))
+    print("\nResposta do programa: ", Minimizacao.stateEq(afd1, 2, 5))
     continuar()
 
     print("*********************************************************************************************")
-    print("\nO estado 5, portanto não pode ser igual ao estado 1, pois com o caracter 'b' o estado 5 leva ao estado 4 e o estado 1 leva ao estado 3.")
+    print(
+        "\nO estado 5, portanto não pode ser igual ao estado 1, pois com o caracter 'b' o estado 5 leva ao estado 4 e o estado 1 leva ao estado 3.")
     print("Os estados 3 e 4 são trivialmente não equivalentes, uma vez que 4 é um estado final e 3 não.")
     print("Logo, 5 e 1 não podem ser equivalentes")
     print("\n\t5 é equivalente a 1?")
@@ -154,7 +183,7 @@ if __name__ == "__main__":
     print("\nafd1 depois da minimização: \n")
     Minimizacao.minimizacao(afd1)
     print("\nPerceba também que os estados 8 e 9 também foram removidos, por mais que não sejam equivalentes")
-    print("Isso acontece porque 8 e 9 não eram atingidos por nenhum outro estado, o que os torna irrelevantes")
+    print("Isso acontece porque 8 e 9 não eram atingidos por nenhum outro estado, o que os torna irrelevantes\n")
     print(afd1)
     continuar()
 
@@ -187,13 +216,16 @@ if __name__ == "__main__":
     continuar()
 
     print("*********************************************************************************************")
-    print("\nA equivalência de autômato nos diz que se ambos os estados iniciais dos autômatos são equivalentes, os autômatos também são equivalentes.")
-    print("Desse modo, podemos ver que o af2 é equivalente ao af3, pois, embora af3 tenha um alfabeto diferente, ambos estados iniciais são equivalentes.")
+    print(
+        "\nA equivalência de autômato nos diz que se ambos os estados iniciais dos autômatos são equivalentes, os autômatos também são equivalentes.")
+    print(
+        "Desse modo, podemos ver que o af2 é equivalente ao af3, pois, embora af3 tenha um alfabeto diferente, ambos estados iniciais são equivalentes.")
     print("Vejamos melhor esse processo: ")
     print("Primeiro, devemos concatenar os autômatos: \n")
     afconcatenado = Minimizacao.concatAF(af2, af3)
     print("\n\tAF23: \n{}".format(afconcatenado))
-    print("Com os dois autômatos concatenados, podemos verificar se ambos os seus estados iniciais são iguais, com a verificação de estados:")
+    print(
+        "Com os dois autômatos concatenados, podemos verificar se ambos os seus estados iniciais são iguais, com a verificação de estados:")
     print("\n\tAF2 é equivalente ao AF3?")
     print("\nResposta do programa: ", Minimizacao.afEq(af2, af3))
     continuar()
@@ -202,10 +234,57 @@ if __name__ == "__main__":
     print("\nAgora veremos com os AF2 e AF4.")
     afconcatenado = Minimizacao.concatAF(af2, af4)
     print("\n\tAF24: \n{}".format(afconcatenado))
-    print("Com os dois autômatos concatenados, podemos verificar se ambos os seus estados iniciais são iguais, com a verificação de estados:")
+    print(
+        "Com os dois autômatos concatenados, podemos verificar se ambos os seus estados iniciais são iguais, com a verificação de estados:")
     print("\n\tAF2 é equivalente ao AF4?")
     print("\nResposta do programa: ", Minimizacao.afEq(af2, af4))
     print("\nComo podemos ver, o AF2 e AF4 não são equivalentes, pois seus estados iniciais são diferentes.")
-    print("O inicial de AF2 leva a um estado final, e o inicial de AF4 leva a um estado que não é final, logo os estados não são equivalentes.")
+    print(
+        "O inicial de AF2 leva a um estado final, e o inicial de AF4 leva a um estado que não é final, logo os estados não são equivalentes.")
     continuar()
+
+    print("*********************************************************************************************")
+    print("\nDEMONSTRAÇÃO 3: Multiplicação e Operações de Conjunto")
+    print("\nA Multiplicação de autômatos se refere à juntar dois autômatos em um só. ")
+    print("Já as operações de conjunto se utilizam da multiplicação para juntar um autômato no outro com algumas diferença entre cada operação. ")
+    print("Para essa demonstração utilizaremos os mesmos AFD's utilizados na demonstração de Minimização. (AF1, AF2, AF3, AF4)")
+    continuar()
+
+    print("*********************************************************************************************")
+    print("\nMultiplicação:")
+    print("\nA multiplicação apenas junta os autômatos, sem se preocupar com seus estados finais. Vejamos um exemplo da multiplicação dos autômatos 3 e 4\n:")
+    print(Multiplicacao.multi(af3, af4))
+    continuar()
+
+    print("*********************************************************************************************")
+    print("\nUnião:")
+    print("\nA operação de União multiplica os autômatos, e todos os estados finais de ambos os autômatos também são finais no autômato multiplicado.")
+    print(" Vejamos um exemplo da união dos autômatos 3 e 4:\n")
+    print(op.uni(af3, af4))
+    continuar()
+
+    print("*********************************************************************************************")
+    print("\nIntersecção:")
+    print(
+        "\nA operação de Intersecção multiplica os autômatos, e somente os estados finais em ambos os autômatos também são finais no autômato multiplicado.")
+    print(" Vejamos um exemplo da intersecção dos autômatos 2 e 3\n:")
+    print(op.inter(af2, af3))
+    continuar()
+
+    print("*********************************************************************************************")
+    print("\nDiferença:")
+    print(
+        "\nA operação de União multiplica os autômatos, e os finais do autômato resultante são os estados que são finais no primeiro autômato e não são finais no segundo.")
+    print(" Vejamos um exemplo da diferença entre autômatos 3 e 4\n:")
+    print(op.dif(af3, af4))
+    continuar()
+
+    print("*********************************************************************************************")
+    print("\nComplemento:")
+    print("\nA operação de Complemento não multiplica dois autômatos, mas sim 'nega' um autômato específico.")
+    print("Ou seja, os estados que não são finais, agora são finais, e os que são finais deixam de ser.")
+    print(" Vejamos um exemplo do complemento do afd1\n:")
+    print(op.comp(afd1))
+    continuar()
+
 

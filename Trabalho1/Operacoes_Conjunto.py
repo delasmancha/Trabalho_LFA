@@ -7,9 +7,13 @@ def acha(aux, n1, n2):
             return i
 
 
+from Multiplicacao import Multiplicacao
+
+
 class Operacoes:
     @staticmethod
-    def inter(afd1, afd2, afd_res):
+    def inter(afd1, afd2):
+        afd_res = Multiplicacao.multi(afd1, afd2)
         len1 = len(afd1.estados)
         len2 = len(afd2.estados)
         aux = []
@@ -40,7 +44,8 @@ class Operacoes:
         return afd_res
 
     @staticmethod
-    def uni(afd1, afd2, afd_res):
+    def uni(afd1, afd2):
+        afd_res = Multiplicacao.multi(afd1, afd2)
         len1 = len(afd1.estados)
         len2 = len(afd2.estados)
         aux = []
@@ -69,7 +74,8 @@ class Operacoes:
         return afd_res
 
     @staticmethod
-    def dif(afd1, afd2, afd_res):
+    def dif(afd1, afd2):
+        afd_res = Multiplicacao.multi(afd1, afd2)
         len1 = len(afd1.estados)
         len2 = len(afd2.estados)
         aux = []
