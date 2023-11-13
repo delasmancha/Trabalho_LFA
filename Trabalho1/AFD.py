@@ -10,12 +10,16 @@ class AFD:
         self.finais = set()
 
     @staticmethod
-    def saveAf(self, af, nome):
+    def saveAf(af, nome):
+        nome = str(nome)
+        if not nome.endswith(".txt"):
+            nome += ".txt"
         arq = open(nome, "w")
         arq.write(str(af))
+        arq.close()
 
     @staticmethod
-    def loadAF(self, path):
+    def loadAF(path):
         afs = open(path, "r").read()
         est = afs[afs.find('E = {') + 1:afs.find('A = {')]
         alfa = afs[afs.find('A = {') + 1:afs.find('T = {')]
@@ -49,8 +53,15 @@ class AFD:
         return af
 
     @staticmethod
-    def copiaAFD(origem, copia):
-        copia = origem
+    def copiaAFD(origem):
+        copia = AFD(origem.alfabeto)
+        copia.estados = origem.estados
+        copia.transicoes = origem.transicoes
+        for i in origem.estados:
+            if i is origem.inicial:
+                copia.mudaEstadoInicial(i)
+            if i in origem.finais:
+                copia.mudaEstadoFinal(i, True)
         return copia
 
     def limpaAfd(self):
